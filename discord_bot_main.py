@@ -7,7 +7,6 @@ import json
 
 
 
-
 class helpCommand(commands.HelpCommand):
 
     def __init__(self):
@@ -25,20 +24,7 @@ Use ";technical_information" for more information about this bot.
         '''))
 
 
-    # async def send_cog_help(self, cog):
-    #     return await super().send_cog_help(cog)
-    
-    # async def send_group_help(self, group):
-    #     return await super().send_group_help(group)
-    
-    # async def send_command_help(self, command):
-    #     return await super().send_command_help(command)
-
-
-
-
-
-#prefix & setup
+#Setup
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix=';', intents=intents, help_command=helpCommand())
 @client.event
@@ -140,7 +126,6 @@ for filename in os.listdir('./bot_cogs'):
         client.load_extension(f'bot_cogs.{filename[:-3]}')
 
 
-print(os.getcwd())
 #The file "BotToken.json" stores the token that is used to run the bot
 with open('bot_cogs/BotToken.json', "r") as f:
     Token = json.load(f)
