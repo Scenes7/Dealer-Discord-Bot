@@ -13,7 +13,6 @@ class helpCommand(commands.HelpCommand):
         super().__init__()
 
     async def send_bot_help(self, mapping):
-        # return await super().send_bot_help(mapping)
         await self.get_destination().send(embed=discord.Embed(title="Help", color=discord.Colour.green(), description='''
 Dealer is a bot that brings an economy and games to your server.
 Commands start with a semicolon (";")
@@ -24,7 +23,7 @@ Use ";technical_information" for more information about this bot.
         '''))
 
 
-#Setup
+#Bot Setup
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix=';', intents=intents, help_command=helpCommand())
 @client.event
