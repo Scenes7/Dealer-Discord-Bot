@@ -1,9 +1,9 @@
-#This file contains all the games and the commands for the economy
+"""
+This file contains all the games and the commands for the economy
+The file "casinovault.json" contains the token balence of users.
+If a discord user has never used the bot before, they must first do ;balence in a text chanel.
+"""
 
-#The file "casinovault.json" contains the token balence of users.
-# If a discord user has never used the bot before, they must first do ;balence in a text chanel.
-#The json format is "Discord account ID which is a bunch of numbers": {"chips": "integer chip amount", "daily": "mm-dd"}
-#The casinovault.json data in the github repo is just some test data
 
 import discord
 from discord import embeds
@@ -27,7 +27,7 @@ class gamble(commands.Cog):
 
         chip_bal = users[str(user.id)]["chips"]
 
-        em = discord.Embed(title = "{}'s chips".format(ctx.author.name))
+        em = discord.Embed(title = "{}'s chips".format(str(ctx.author.name)[:-2]))
         em.add_field(name='chips', value=chip_bal)
         await ctx.send(embed=em)
 
@@ -57,7 +57,7 @@ class gamble(commands.Cog):
         users = await self.get_account_data()
         user = ctx.author
 
-        em = discord.Embed(title="Admin Generate", description='generated {} chips for {}'.format(amount, user.name))
+        em = discord.Embed(title="Admin Generate", description='generated {} chips for {}'.format(amount, str(user.name)[:-2]))
         await ctx.send(embed=em)
         users[str(user.id)]["chips"]+=amount
 
@@ -95,9 +95,8 @@ class gamble(commands.Cog):
         users = await self.get_account_data()
         user = ctx.author
         user1 = str(user)
-        descrim = user1.find('#')
         if person == '89fsdj83h4fre54uin43vf':
-            em = discord.Embed(title="{}'s balance".format(user1[:descrim]), description="chips: {}".format(users[str(user.id)]["chips"]))
+            em = discord.Embed(title="{}'s balance".format(user1), description="chips: {}".format(users[str(user.id)]["chips"]))
             await ctx.send(embed=em)
         else:
             for member in ctx.guild.members:
@@ -390,10 +389,9 @@ class gamble(commands.Cog):
             player_total +=12
         else:
             player_total=player_card_1+player_card_2
-        aaaa = str(ctx.message.author)
-        aaa = aaaa.find('#')
+        player_name = str(ctx.message.author)
         table_embed = discord.Embed(
-            title="Blackjack | "+aaaa[:aaa], 
+            title="Blackjack | "+str(player_name)[:-2], 
             description="""The one who's closest to 21 wins. All cards count their own number up to 10. Ties go to the house.
             Use bj_hit to draw a new card
             use bj_stay to finish
@@ -419,7 +417,7 @@ class gamble(commands.Cog):
             if msg1 == 'bj_fold':
 
                 table_embed_fold = discord.Embed(
-                    title="Blackjack | "+aaaa[:aaa]+" | Fold", 
+                    title="Blackjack | "+player_name+" | Fold", 
                     description = 'You have surrendered and recovered half of your bet ('+str(round(amount/2))+').',
                     color=0x000000)
                 table_embed_fold.add_field(name="You "+str(player_total), value=str(player_cards_display), inline=True)
@@ -443,14 +441,14 @@ class gamble(commands.Cog):
                                 player_total-=10
                             else:
                                 table_embed_player_bust = discord.Embed(
-                                title="Blackjack | "+aaaa[:aaa]+" | You Lost! You exceeded 21.", 
+                                title="Blackjack | "+player_name+" | You Lost! You exceeded 21.", 
                                 color=0x000000)
                                 table_embed_player_bust.add_field(name="You "+str(player_total), value=str(player_cards_display), inline=True)
                                 table_embed_player_bust.add_field(name="Dealer ", value=dealer_card_1_suit+convert[dealer_card_1]+" ?", inline=True)
                                 await embed_msg.edit(embed=table_embed_player_bust)
                                 break  
                         table_embed_edit = discord.Embed(
-                        title="Blackjack | "+aaaa[:aaa], 
+                        title="Blackjack | "+player_name, 
                         description="""The one who's closest to 21 wins. All cards count their own number up to 10. Ties go to the house.
                         Use bj_hit to draw a new card
                         use bj_stay to finish
@@ -477,7 +475,7 @@ class gamble(commands.Cog):
         #checks for natural player blackjack
         if len(player_cards)==2 and player_total == 21 and dealer_total != 21:
             table_embed_edit = discord.Embed(
-                title="Blackjack | "+aaaa[:aaa]+" | BLACKJACK! You Won "+str(amount*2)+'.', 
+                title="Blackjack | "+player_name+" | BLACKJACK! You Won "+str(amount*2)+'.', 
             color=0x000000)
             table_embed_edit.add_field(name="You "+str(player_total), value=str(player_cards_display), inline=True)
             table_embed_edit.add_field(name="Dealer "+str(dealer_total), value=dealer_card_1_suit+str(dealer_card_1)+" ?", inline=True)
@@ -508,7 +506,7 @@ class gamble(commands.Cog):
                 else:
                     dealer_cards_display+=suits[random.randint(1, 4)-3]+convert[card1]
                     table_embed_edit = discord.Embed(
-                        title="Blackjack | "+aaaa[:aaa]+" | You Won "+str(amount*2)+"! The dealer exceeded 21", 
+                        title="Blackjack | "+player_name+" | You Won "+str(amount*2)+"! The dealer exceeded 21.", 
                         color=0x000000)
                     table_embed_edit.add_field(name="You "+str(player_total), value=str(player_cards_display), inline=True)
                     table_embed_edit.add_field(name="Dealer "+str(dealer_total), value=dealer_cards_display, inline=True)
@@ -531,7 +529,7 @@ class gamble(commands.Cog):
             outcome_string  = " | You Tied! You get your initial bet back."
             users[str(user.id)]["chips"]+=amount
         table_embed_edit = discord.Embed(
-            title="Blackjack | "+aaaa[:aaa]+outcome_string, 
+            title="Blackjack | "+player_name+outcome_string, 
             color=0x000000)
         table_embed_edit.add_field(name="You "+str(player_total), value=str(player_cards_display), inline=True)
         table_embed_edit.add_field(name="Dealer "+str(dealer_total), value=dealer_cards_display, inline=True)
@@ -548,26 +546,30 @@ class gamble(commands.Cog):
     @commands.command()
     #pregame setup
     async def poker(self, ctx, *, player2="1"): #first player named will be small blind, second will be big blind
-        error_text = 'An Error Has Occured'
-        em3=discord.Embed(title=error_text)
+        error_text = 'An Error Has Occured'; em3=discord.Embed(title=error_text)
         try:
             if player2=='1':
                 em1 = discord.Embed(title=error_text, description='You cannot play by yourself. type ";poker_rules" to find the commands to play poker.')
                 await ctx.send(embed=em1)
                 return
-        
-            if player2 == str(ctx.message.author):
-                await ctx.send('nice try')
+            if player2 == str(ctx.message.author): #kfdskfkahfkjad move this ##############################
+                await ctx.send('You cannot play with yourself.')
                 return
         except:
             await ctx.send(em3)
             return
+        await ctx.channel.send("15: ") ############################
 
         #creates the player list and finds the limit
-        players = player2.split(", ")
-        limit = int(players[0])
+        try:
+            players = list(map(lambda p: p.strip(), player2.split(",")))
+            print(players, players[0], int(players[0])) ################################
+            limit = int(players[0])
+            
+        except:
+            await ctx.channel.send("Please specify a valid betting limit.")
+            return
         players.pop(0)
-        
         try:
             if isinstance(limit, int)==False:
                 em3.add_field(name="Error", value='Enter a valid limit', inline=True)
@@ -587,49 +589,22 @@ class gamble(commands.Cog):
         if users[str(user.id)]["chips"]<limit:
             em4 = discord.Embed(title=error_text, description='You do not have enough chips.')
             await ctx.send(embed=em4)
-        player_suit_1 = ''
-        player_suit_2 = ''
+        player_suit_1, player_suit_2 = '', ''
         pool = 0
-        blind_counter = 0
-        player_card_1 = 0
-        player_card_2 = 0
-        highest_card = 0
-        call_cost = 10
-        raise_cost = 20
-        game_stage = 0 #game stage should be 0 instead of 1. Game stage instantly going to 2 is not a bug; since there's only 2 players
+        blind_counter, player_card_1, player_card_2, highest_card  = 0, 0, 0, 0
+        call_cost, raise_cost = 10, 20
+        game_stage = 0
         skip_2 = 0 #both players are the small and big blind so it skips them. This makes it so there isn't a pre-flop round
-        small_blind_cost = 10
-        big_blind_cost = 20
-        straight_counter = False
-        flush_counter = False
-        raise_effect = False
-        game_status = True
-        start_token = False
-        draw = False
-        inefficient_token = False
-        token1 = False
-        checking = False
-        all_in_effect = False
-        shuffle_counter = False
-        amount_token = False
-        winning_token = True
-        all_in_players = []
-        d_diamonds = []
-        d_clubs = []
-        d_hearts = []
-        d_spades = []
-        r_diamonds = []
-        r_clubs = []
-        r_hearts = []
-        r_spades = []
-        all_cards = []
-        all_hand_value = []
+        small_blind_cost, big_blind_cost = 10, 20
+        straight_counter, flush_counter, raise_effect, start_token, draw, check_token, token1, checking, all_in_effect, shuffle_counter, amount_token = False, False, False, False, False, False, False, False, False, False, False
+        game_status, winning_token = True, True
+        d_diamonds, d_clubs, d_hearts, d_spades, r_diamonds, r_clubs, r_hearts, r_spades = [], [], [], [], [], [], [], []
+        all_in_players, all_cards, all_hand_value = [], [], []
         channel = ctx.channel
-        raise_player = ''
-        raise_amount=''
-        game_description=''
+        raise_player, raise_amount, game_description = '', '', ''
         previous='none'
         game_number = str(random.randint(100000000, 999999999))
+        actions = ['call', 'check', 'raise', 'fold', 'all in', 'all-in', 'bet']
         game_rounds = ['Pre-Flop', 'Flop', 'Turn', 'River', 'Showdown']
         cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
         suits = [':diamonds:', ':clubs:', ':hearts:', ':spades:']
@@ -675,7 +650,6 @@ class gamble(commands.Cog):
         [community_suit_3, community_card_3], 
         [community_suit_4, community_card_4], 
         [community_suit_5, community_card_5]]
-        #community_cards = [[':clubs:', 13], [':diamonds:', 9], [':diamonds:', 10], [':diamonds:', 11], [':diamonds:', 12]]
         for i in range(5):
             if community_cards[i][0] == ':diamonds:':
                 d_diamonds.append(community_cards[i][1])
@@ -691,10 +665,7 @@ class gamble(commands.Cog):
             community_suit_3 = suits[random.randint(1, 4)-1]
             community_suit_4 = suits[random.randint(1, 4)-1]
             community_suit_5 = suits[random.randint(1, 4)-1]
-            d_diamonds = []
-            d_clubs = []
-            d_hearts = []
-            d_spades = []
+            d_diamonds, d_clubs, d_hearts, d_spades = [], [], [], []
             for i in range(5):
                 if community_cards[i][0] == ':diamonds:':
                     d_diamonds.append(community_cards[i][1])
@@ -706,7 +677,7 @@ class gamble(commands.Cog):
                     d_spades.append(community_cards[i][1])
         while community_card_1 == community_card_2 == community_card_3 == community_card_4 == community_card_5:
             community_card_1 = cards[random.randint(1, 13)-1]
-        #refining up variables 
+
         for g in range(len(players)):
             for member in ctx.guild.members:
                 if member.name == players[g]:
@@ -714,18 +685,18 @@ class gamble(commands.Cog):
                     if limit>users[str(member.id)]["chips"]:
                         await ctx.send("{} does not have enough chips".format(member.name))
                         return
+        
         for player in players: 
             if player not in ctx.guild.members:
-                await ctx.send("error, a player invited is not in this server. {}".format(player))
+                await ctx.send("error, a player invited is not in this server: {}".format(player))
                 return
-                
+            
+        print(players, " KHJDKHJLSSD") ########################################
         #Requires players to accept match
-        player_str = str(ctx.message.author)
+        player_str = str(ctx.message.author)[:-2]
         counter2=0
         for player in players:
-            player = str(player)
-            player_discriminator = player.find('#')
-            player_str+=str(player[:player_discriminator])
+            player_str+=" "+str(player)[:-2]
             counter2+=1
             if counter2 != len(players):
                 player_str+=', '
@@ -739,7 +710,7 @@ class gamble(commands.Cog):
         for player in players:
             start_token = False
             setup_current_player = discord.Embed(
-            description = 'currently waiting for {} to accept. Type "game accept" to accept the game invite, or "game decline" to reject the game'.format(player)
+            description = 'currently waiting for {} to accept. Type "game accept" to accept the game invite, or "game decline" to reject the game'.format(str(player)[:-2])
             )
             if counter3 == False:
                 counter3 = True
@@ -846,7 +817,7 @@ class gamble(commands.Cog):
         while game_status == True and game_stage < 4:
             if raise_effect != True:
                 game_stage+=1
-            if inefficient_token == True:
+            if check_token == True:
                 game_stage +=1
             game_round = game_rounds[game_stage-1]
             if raise_effect == False and game_stage>1:  #grants the ability to check at the start of each round
@@ -913,7 +884,7 @@ class gamble(commands.Cog):
                     )
 
                 game_embed.add_field(name='Previous Action', value=previous)
-                game_embed.add_field(name='Current Turn:', value=player, inline=True)
+                game_embed.add_field(name='Current Turn:', value=str(player)[:-2], inline=True)
                 game_embed.add_field(name='Pool Value:', value=pool, inline=True)
                 game_embed.add_field(name='Game Stage', value=game_round, inline=True)
                 if game_stage >1 and checking == True: #replaces the call option with the bet option
@@ -944,7 +915,7 @@ class gamble(commands.Cog):
                         token1 = True
                     msg1 = str(msg.content)
                     if msg.author == player:
-                        if msg1 == 'call' or msg1 == 'check' or msg1[:5] == 'raise' or msg1 == 'fold' or msg1 == 'all in' or msg1 == 'all-in' or msg1[:3] == 'bet':
+                        if msg1 in actions:
                             token1 = True
 
                         if all_in_effect == True:
@@ -1067,7 +1038,7 @@ class gamble(commands.Cog):
                     break
 
             if game_stage == 4 and raise_effect == True: #this is a lazy way to fix the bug of betting/calling on river being broken
-                inefficient_token = True
+                check_token = True
                 game_stage -= 1
         if game_status == True:
             for i in range(5):
@@ -1255,7 +1226,8 @@ class gamble(commands.Cog):
 Game Commands
 
 Initiating the Game:
-;poker <amount>, <name1>, (name2), (name3), (name4), (name5)      parameters in <> are mandatory while parameters in () are optional. A comma after the amount and each name except for the last is required.
+;poker (limit), (player2), (player3), (player4), (player5), (player6)
+(limit) and (player2) is mandetory (you must play with at least one other player and you must set a betting limit)
 
 once the game has been initiated, all players must type game accept in the order they are mentioned.
 
@@ -1633,8 +1605,8 @@ Invite me to other servers using: https://discord.com/api/oauth2/authorize?clien
                                     kicker = i+j+2 #the 3 of a kind value takes the place of kicker
                                     await ctx.send('')
                 except:
-                    pass #this try except is used to break out of the nested loop above. Raises an exception to break out
-                if pair_counter == 0 and three_counter == 0: #checking for hand_value==0 is to account for 4 of a kind
+                    pass
+                if pair_counter == 0 and three_counter == 0:
                     for i in range(4):
                         if suit_count[i]==5:
                             flush_counter = True
@@ -1740,7 +1712,7 @@ Invite me to other servers using: https://discord.com/api/oauth2/authorize?clien
                 optimal_path = ""
                 for c in initial_cols: optimal_path+=str(c)+", "
                 for r in initial_rows: optimal_path+=row_reverse_convert[r]+", "
-                await game_msg.edit(embed=discord.Embed(title="You Lost!", description="You took more moves than the optimal solution. The optimal solution was: {}".format(optimal_path[:-2])))
+                await game_msg.edit(embed=discord.Embed(title="You Lost!", description="You took more moves than the optimal solution. An optimal solution was: {}".format(optimal_path[:-2])))
                 with open('bot_cogs/casinovault.json', "w") as f:
                     json.dump(users, f)
                 return
@@ -1763,7 +1735,7 @@ Invite me to other servers using: https://discord.com/api/oauth2/authorize?clien
             
             display = ":zero: :one: :two: :three: :four: :five: :six: :seven: :eight: :nine: \n"
             for f, t in enumerate(gameI): display+=str(" ".join(t))+letter_display[f]+"\n"
-            await game_msg.edit(embed=discord.Embed(title="{}'s Squares Game".format((str(ctx.author))[:-5]), description=display))
+            await game_msg.edit(embed=discord.Embed(title="{}'s Squares Game".format((str(ctx.author))[:-2]), description=display))
 
             if rcount == 0:
                 await game_msg.edit(embed=discord.Embed(title="Squares Cleared!", description="You solved this squares game in {} moves. You won {}!".format(best, int(int(bet)*1.5))))
@@ -1773,10 +1745,5 @@ Invite me to other servers using: https://discord.com/api/oauth2/authorize?clien
                 return
 
 
-
-
-
-
-
-def setup(client):
-    client.add_cog(gamble(client))
+async def setup(client):
+    await client.add_cog(gamble(client))
