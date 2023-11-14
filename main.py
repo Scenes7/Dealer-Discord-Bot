@@ -55,11 +55,6 @@ For a list of all commands, use ;features
 
 
 @client.command()
-async def first_command(interaction):
-    await interaction.response.send_message("Hello!")
-
-
-@client.command()
 async def features(ctx):
     await ctx.send(embed=discord.Embed(title="Here are all the Commands:", color=discord.Colour.green(), description='''
 **Game Commands**
