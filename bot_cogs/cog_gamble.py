@@ -504,18 +504,16 @@ class gamble(commands.Cog):
                 em1 = discord.Embed(title=error_text, description='You cannot play by yourself. type ";poker_rules" to find the commands to play poker.')
                 await ctx.send(embed=em1)
                 return
-            if player2 == str(ctx.message.author): #kfdskfkahfkjad move this ##############################
+            if player2 == str(ctx.message.author):
                 await ctx.send('You cannot play with yourself.')
                 return
         except:
             await ctx.send(em3)
             return
-        await ctx.channel.send("15: ") ############################
 
         #creates the player list and finds the limit
         try:
             players = list(map(lambda p: p.strip(), player2.split(",")))
-            print(players, players[0], int(players[0])) ################################
             limit = int(players[0])
             
         except:
@@ -643,7 +641,6 @@ class gamble(commands.Cog):
                 await ctx.send("error, a player invited is not in this server: {}".format(player))
                 return
             
-        print(players, " KHJDKHJLSSD") ########################################
         #Requires players to accept match
         player_str = str(ctx.message.author)[:-2]
         counter2=0
@@ -871,10 +868,8 @@ class gamble(commands.Cog):
                             token1 = True
 
                         if all_in_effect == True:
-                            #
                             if checking == True:
                                 await ctx.send('something has gone wrong; both checking and all_in_effect are active')
-                            #
                             if msg1 == 'fold' or msg1 == 'all in' and msg1 =='call':
                                 pass
                             else:
@@ -1442,7 +1437,6 @@ Invite me to other servers using: https://discord.com/api/oauth2/authorize?clien
                     bet_close_em = discord.Embed(title='Betting Has Finished Again', description="The pot is worth {}! You will now compare hands, and the player with the highest hand will win the entire pot.".format(pool))
                 await bet_msg.delete()
                     
-                #swap card swap system ##############
                 if game_stage == 1:
                     game_stage+=1
                     while one_swap  == False or two_swap == False:
