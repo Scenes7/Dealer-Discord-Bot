@@ -341,9 +341,9 @@ class gamble(commands.Cog):
             player_total +=12
         else:
             player_total=player_card_1+player_card_2
-        player_name = str(ctx.message.author)
+        player_name = str(ctx.message.author)[:-2]
         table_embed = discord.Embed(
-            title="Blackjack | "+str(player_name)[:-2], 
+            title="Blackjack | "+player_name, 
             description="""The one who's closest to 21 wins. All cards count their own number up to 10. Ties go to the house.
             Use bj_hit to draw a new card
             use bj_stay to finish
