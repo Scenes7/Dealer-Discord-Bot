@@ -50,20 +50,8 @@ class gamble(commands.Cog):
         with open('bot_cogs/casinovault.json', "r") as f:
             users = json.load(f)
         return users
+
     
-    @commands.command()
-    async def administrator_generate(self, ctx, *, amount=1000):
-        await self.open_account(ctx.author) 
-        users = await self.get_account_data()
-        user = ctx.author
-
-        em = discord.Embed(title="Admin Generate", description='generated {} chips for {}'.format(amount, str(user.name)[:-2]))
-        await ctx.send(embed=em)
-        users[str(user.id)]["chips"]+=amount
-
-        with open('bot_cogs/casinovault.json', "w") as f:
-            json.dump(users, f)
-
     @commands.command()
     async def void(self, ctx, *, amount=100):
         try:
@@ -84,8 +72,6 @@ class gamble(commands.Cog):
             description1='Input a valid amount.'
         em1 = discord.Embed(title=title1, description=description1)
         await ctx.send(embed=em1)
-    
-
 
 
     @commands.command()
@@ -112,40 +98,6 @@ class gamble(commands.Cog):
 
             em = discord.Embed(title=title1, description=description1)
             await ctx.send(embed=em)
-
-
-    @commands.command()
-    async def shop(self, ctx, *, item='438gehfdnij2047r8edfh'):
-        shop = discord.Embed(Title = 'Casino Exchange', description='Exchange your chips for perks! More products will be added later. Use ;shop <product name> to purchase.')
-        shop.add_field(name="Steal | attempt to steal half of someone's chips", value="half of target's chips")
-        shop.add_field(name='Administrator Permissions | gain administrator privileges in this server', value='1000000 chips')
-        shop.add_field(name='Bot Administrator Permissions | recieve the API token used to edit this bot', value='9999999999999 chips')
-        if item=='438gehfdnij2047r8edfh':
-            await ctx.send(embed=shop)
-            return
-        else:
-            users = await self.get_account_data()
-            user = ctx.message.author
-            if item == 'Administrator Permissions' or item == 'administrator permissions':
-                mill = 1000000
-                if users[str(user.id)]["chips"]<mill:
-                    await ctx.send(embed=discord.Embed(title='Error', description='You do not have enough chips for this product.'))
-                    return
-                perms = discord.Permissions(administrator = True)
-                await ctx.guild.create_role(name="{} admin".format(user.name), permissions = perms, colour=discord.Colour(0xff595e))
-                role1 = discord.utils.get(ctx.guild.roles, name="{} admin".format(user.name))
-                users[str(user.id)]["chips"]-=mill
-                await user.add_roles(role1)
-                await ctx.send(embed=discord.Embed(title='Successful Purchase', description='You have successfully purchased admin.'))
-            elif item == 'Bot Administrator Permissions' or item == 'bot administrator permissions':
-                if users[str(user.id)]["chips"]<9999999999999:
-                    await ctx.send(embed=discord.Embed(title='Error', description='You do not have enough chips for this product.'))
-                    return
-                else:
-                    await ctx.send(embed=discord.Embed(title='Nice Try', description="You didn't get all these tokens legitimately. As punishment, you lose all your tokens :)"))
-                    users[str(user.id)]["chips"] = 0
-            with open('bot_cogs/casinovault.json', "w") as f:
-                json.dump(users, f)
 
 
     @commands.command()
