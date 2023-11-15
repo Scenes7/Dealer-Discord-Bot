@@ -520,6 +520,7 @@ class gamble(commands.Cog):
             await ctx.channel.send("Please specify a valid betting limit.")
             return
         players.pop(0)
+        players = list(map(lambda p: p.lower(), players))
         try:
             if isinstance(limit, int)==False:
                 em3.add_field(name="Error", value='Enter a valid limit', inline=True)
